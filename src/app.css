@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@media print {
+	:root {
+		font-size: 0.75rem;
+		line-height: 1rem;
+	}
+}
+
+@page {
+	size:21cm 29.7cm;
+	margin:10mm 20mm 10mm 20mm
+}
