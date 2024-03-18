@@ -3,6 +3,7 @@
 	import { calculateDueDate } from '$lib/dueDate'
 	import type { Item } from '../types/item'
 	import type { State } from '../types/state'
+	import { refChecksum } from '$lib/refChecksum'
 
 	export let state: State
 	export let items: Item[]
@@ -117,7 +118,15 @@
 				Ref.nr
 			</td>
 			<td class="border-b-2 border-neutral-700 p-1" colspan="3">
-				<input type="text" class="w-52 bg-yellow-200 print:bg-white" bind:value={state.reference} />
+				<input
+					type="text"
+					class="w-52 bg-yellow-200 print:hidden invalid:bg-red-300"
+					bind:value={state.reference}
+					required
+					pattern="[1-9]\d{'{'}2,18{'}'}"
+				/>
+				<span class="print:hidden">{refChecksum(state.reference)}</span>
+				<span class="hidden print:inline">{state.reference}{refChecksum(state.reference)}</span>
 			</td>
 		</tr>
 		<tr>

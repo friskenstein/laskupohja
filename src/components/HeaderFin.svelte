@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { State } from '../types/state'
 	import { calculateDueDate } from '$lib/dueDate'
+	import { refChecksum } from '$lib/refChecksum'
 
 	export let state: State
 </script>
@@ -27,9 +28,13 @@
 					<td>
 						<input
 							type="text"
-							class="w-52 bg-yellow-200 print:bg-white"
+							class="w-52 bg-yellow-200 print:hidden invalid:bg-red-300"
 							bind:value={state.reference}
+							required
+							pattern="[1-9]\d{'{'}2,18{'}'}"
 						/>
+						<span class="print:hidden">{refChecksum(state.reference)}</span>
+						<span class="hidden print:inline">{state.reference}{refChecksum(state.reference)}</span>
 					</td>
 				</tr>
 				<tr>

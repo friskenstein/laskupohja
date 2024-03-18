@@ -11,7 +11,7 @@
 
 	let state: State = {
 		invoiceNumber: $page.url.searchParams.get('invoiceNumber') ?? '',
-		reference: $page.url.searchParams.get('reference') ?? '',
+		reference: $page.url.searchParams.get('reference') ?? '100',
 		invoiceDate: today.toISOString().slice(0, 10) ?? '',
 		dueDays: $page.url.searchParams.get('dueDays') ?? '14', // NOTE: invoiceDate + dueDays = dueDate
 		note: $page.url.searchParams.get('note') ?? '',
