@@ -1,6 +1,12 @@
+<script lang="ts">
+	import type { State } from '../types/state'
+
+	export let state: State
+</script>
+
 <section>
-	<textarea class="mx-2 my-8 bg-yellow-200 print:hidden" cols="80"></textarea>
-	<p class="hidden px-2 py-8 print:block"><!-- HTML_TAG_START --><!-- HTML_TAG_END --></p>
+	<textarea class="mx-2 my-8 bg-yellow-200 print:hidden" cols="80" bind:value={state.note} />
+	<p class="hidden px-2 py-8 print:block">{@html state.note}</p>
 
 	<table class="w-full">
 		<tr class="bg-neutral-200 font-bold">

@@ -1,3 +1,15 @@
+<script lang="ts">
+	import type { State } from '../types/state'
+
+	export let state: State
+
+	function calculateDueDate(state: State): string {
+		const dueDate = new Date(state.invoiceDate)
+		dueDate.setDate(dueDate.getDate() + parseInt(state.dueDays))
+		return dueDate.toLocaleDateString('fi-FI')
+	}
+</script>
+
 <section>
 	<div class="flex flex-row">
 		<div class="w-6/12"></div>
@@ -7,22 +19,34 @@
 			<table class="w-full border-t border-neutral-700">
 				<tr>
 					<td>Laskun numero</td>
-					<td><input type="text" class="w-52 bg-yellow-200 print:bg-white" value="" /></td>
+					<td>
+						<input
+							type="text"
+							class="w-52 bg-yellow-200 print:bg-white"
+							bind:value={state.invoiceNumber}
+						/>
+					</td>
 				</tr>
 				<tr>
 					<td>Viitenumero</td>
-					<td><input type="text" class="w-52 bg-yellow-200 print:bg-white" value="" /></td>
+					<td>
+						<input
+							type="text"
+							class="w-52 bg-yellow-200 print:bg-white"
+							bind:value={state.reference}
+						/>
+					</td>
 				</tr>
 				<tr>
 					<td>Laskun päiväys</td>
 					<td>
-						<input type="date" class="bg-yellow-200 print:hidden" value="2024-03-17" />
-						<span class="hidden print:inline">17.3.2024</span>
+						<input type="date" class="bg-yellow-200 print:hidden" bind:value={state.invoiceDate} />
+						<span class="hidden print:inline">{new Date(state.invoiceDate).toLocaleDateString('fi-FI')}</span>
 					</td>
 				</tr>
 				<tr>
 					<td>Eräpäivä</td>
-					<td class="font-bold">15.4.2024</td>
+					<td class="font-bold">{ calculateDueDate(state) }</td>
 				</tr>
 				<tr>
 					<td>Maksuehto</td>

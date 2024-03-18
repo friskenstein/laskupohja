@@ -60,6 +60,7 @@
 				<br />
 				<br />
 				<br />
+				<!-- this is how legends code -->
 				<br />
 				<br />
 				<br />
