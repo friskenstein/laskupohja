@@ -5,6 +5,7 @@
 	import PaymentDetailsFin from '../components/PaymentDetailsFin.svelte'
 	import { pushState } from '$app/navigation'
 	import type { State } from '../types/state'
+	import type { Item } from '../types/item'
 
 	let today = new Date()
 
@@ -34,12 +35,16 @@
 		companyWww: $page.url.searchParams.get('companyWww') ?? '',
 	}
 
-
+	let items: Item[] = JSON.parse(
+		$page.url.searchParams.get('items') ?? '[["Esimerkki tuote tai palvelu",1,"kpl",9.99,24]]'
+	)
+	let lang = 'fi'
 </script>
 
 <header class="flex flex-row justify-center p-4 print:hidden">
 	<select
 		class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+		bind:value={lang}
 	>
 		<option value="fi" class="">Suomi</option>
 		<option value="en" class="">EU / 🌐</option>
@@ -53,6 +58,7 @@
 			for (const [key, value] of Object.entries(state)) {
 				url.searchParams.set(key, value ?? '')
 			}
+			url.searchParams.set('items', JSON.stringify(items))
 			// set the URL without reloading the page
 			pushState(url.toString(), {})
 		}}
@@ -63,8 +69,8 @@
 
 <main class="flex flex-col items-center print:h-screen">
 	<article class="flex h-full w-full max-w-5xl flex-col justify-between print:max-w-none">
-		<HeaderFin {state} />
-		<ItemBreakdown  {state}/>
-		<PaymentDetailsFin />
+		<HeaderFin bind:state />
+		<ItemBreakdown bind:state bind:items />
+		<PaymentDetailsFin bind:state {items} />
 	</article>
 </main>

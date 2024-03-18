@@ -1,13 +1,8 @@
 <script lang="ts">
 	import type { State } from '../types/state'
+	import { calculateDueDate } from '$lib/dueDate'
 
 	export let state: State
-
-	function calculateDueDate(state: State): string {
-		const dueDate = new Date(state.invoiceDate)
-		dueDate.setDate(dueDate.getDate() + parseInt(state.dueDays))
-		return dueDate.toLocaleDateString('fi-FI')
-	}
 </script>
 
 <section>
@@ -41,22 +36,24 @@
 					<td>Laskun päiväys</td>
 					<td>
 						<input type="date" class="bg-yellow-200 print:hidden" bind:value={state.invoiceDate} />
-						<span class="hidden print:inline">{new Date(state.invoiceDate).toLocaleDateString('fi-FI')}</span>
+						<span class="hidden print:inline">
+							{new Date(state.invoiceDate).toLocaleDateString('fi-FI')}
+						</span>
 					</td>
 				</tr>
 				<tr>
 					<td>Eräpäivä</td>
-					<td class="font-bold">{ calculateDueDate(state) }</td>
+					<td class="font-bold">{calculateDueDate(state)}</td>
 				</tr>
 				<tr>
 					<td>Maksuehto</td>
 					<td>
-						<select class="bg-yellow-200 print:hidden">
-							<option value="7">7</option>
-							<option value="14">14</option>
-							<option value="30">30</option>
-						</select>
-						<span class="hidden print:inline">30</span>
+						<input
+							type="number"
+							class="w-12 bg-yellow-200 print:hidden"
+							bind:value={state.dueDays}
+						/>
+						<span class="hidden print:inline">{state.dueDays}</span>
 						pv netto
 					</td>
 				</tr>

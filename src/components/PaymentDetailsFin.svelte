@@ -1,26 +1,36 @@
+<script lang="ts">
+	import { fmtMoney } from '$lib/fmtMoney'
+	import { calculateDueDate } from '$lib/dueDate'
+	import type { Item } from '../types/item'
+	import type { State } from '../types/state'
+
+	export let state: State
+	export let items: Item[]
+</script>
+
 <section>
 	<table class="w-full border-t-2 border-neutral-700 text-sm">
 		<tr>
 			<td>Yritys</td>
-			<td><input class="bg-yellow-200 print:bg-white" value="" /></td>
+			<td><input class="bg-yellow-200 print:bg-white" bind:value={state.companyName} /></td>
 			<td>Puh.</td>
-			<td><input class="w-60 bg-yellow-200 print:bg-white" value="" /></td>
+			<td><input class="w-60 bg-yellow-200 print:bg-white" bind:value={state.companyPhone} /></td>
 		</tr>
 		<tr>
 			<td>Osoite</td>
 			<td>
-				<input class="bg-yellow-200 print:hidden" value="" />
-				<input class="bg-yellow-200 print:hidden" value="" />
-				<span class="hidden print:inline">,</span>
+				<input class="bg-yellow-200 print:hidden" bind:value={state.companyAddress1} />
+				<input class="bg-yellow-200 print:hidden" bind:value={state.companyAddress2} />
+				<span class="hidden print:inline">{state.companyAddress1}, {state.companyAddress2}</span>
 			</td>
 			<td>Sähköposti</td>
-			<td><input class="w-60 bg-yellow-200 print:bg-white" value="" /></td>
+			<td><input class="w-60 bg-yellow-200 print:bg-white" bind:value={state.companyEmail} /></td>
 		</tr>
 		<tr>
 			<td>Y-tunnus</td>
-			<td><input class="bg-yellow-200 print:bg-white" value="" /></td>
+			<td><input class="bg-yellow-200 print:bg-white" bind:value={state.companyYtunnus} /></td>
 			<td>www</td>
-			<td><input class="w-60 bg-yellow-200 print:bg-white" value="" /></td>
+			<td><input class="w-60 bg-yellow-200 print:bg-white" bind:value={state.companyWww} /></td>
 		</tr>
 	</table>
 
@@ -38,12 +48,12 @@
 			<td class="w-6/12 border-b-2 border-r-2 border-neutral-700 p-1 align-top">
 				IBAN
 				<br />
-				<input type="text" class="w-52 bg-yellow-200 print:bg-white" value="" />
+				<input type="text" class="w-52 bg-yellow-200 print:bg-white" bind:value={state.iban} />
 			</td>
 			<td class="w-5/12 border-b-2 border-neutral-700 p-1 align-top" colspan="4">
 				SWIFT/BIC
 				<br />
-				<input class="bg-yellow-200 print:bg-white" value="" />
+				<input class="bg-yellow-200 print:bg-white" bind:value={state.swiftBic} />
 			</td>
 		</tr>
 		<tr>
@@ -87,11 +97,11 @@
 				Underskrift
 			</td>
 			<td class="border-b-2 border-r-2 border-neutral-700 p-1 align-top" rowspan="2">
-				<input class="w-80 bg-yellow-200 print:bg-white" value="" />
+				<input class="w-80 bg-yellow-200 print:bg-white" bind:value={state.payerName} />
 				<br />
-				<input class="w-80 bg-yellow-200 print:bg-white" value="" />
+				<input class="w-80 bg-yellow-200 print:bg-white" bind:value={state.payerAddress1} />
 				<br />
-				<input class="w-80 bg-yellow-200 print:bg-white" value="" />
+				<input class="w-80 bg-yellow-200 print:bg-white" bind:value={state.payerAddress2} />
 				<br />
 				<br />
 				<br />
@@ -106,7 +116,9 @@
 				<br />
 				Ref.nr
 			</td>
-			<td class="border-b-2 border-neutral-700 p-1" colspan="3"></td>
+			<td class="border-b-2 border-neutral-700 p-1" colspan="3">
+				<input type="text" class="w-52 bg-yellow-200 print:bg-white" bind:value={state.reference} />
+			</td>
 		</tr>
 		<tr>
 			<td class="border-b-2 border-r-2 border-neutral-700 p-1 text-right text-xs">
@@ -120,9 +132,13 @@
 				<br />
 				Förf.dag
 			</td>
-			<td class="border-b-2 border-r-2 border-neutral-700 p-1">15.4.2024</td>
+			<td class="border-b-2 border-r-2 border-neutral-700 p-1">{calculateDueDate(state)}</td>
 			<td class="border-b-2 border-neutral-700 p-1 align-top text-xs">Euro</td>
-			<td class="border-b-2 border-neutral-700 p-1">0,00</td>
+			<td class="border-b-2 border-neutral-700 p-1">
+				{fmtMoney(
+					items.reduce((acc, item) => acc + item[1] * item[3] * (item[4] * 0.01 + 1), 0)
+				).replace('€', '')}
+			</td>
 		</tr>
 	</table>
 
