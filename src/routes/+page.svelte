@@ -6,6 +6,9 @@
 	import { pushState } from '$app/navigation'
 	import type { State } from '../types/state'
 	import type { Item } from '../types/item'
+	import { onMount } from 'svelte'
+	import JsBarcode from 'jsbarcode'
+	import { v4 } from '$lib/bankBarcode'
 
 	let today = new Date()
 
@@ -15,7 +18,7 @@
 		invoiceDate: today.toISOString().slice(0, 10) ?? '',
 		dueDays: $page.url.searchParams.get('dueDays') ?? '14', // NOTE: invoiceDate + dueDays = dueDate
 		note: $page.url.searchParams.get('note') ?? '',
-		iban: $page.url.searchParams.get('iban') ?? '',
+		iban: $page.url.searchParams.get('iban') ?? 'FI00 0000 0000 0000 00',
 		swiftBic: $page.url.searchParams.get('swiftBic') ?? '',
 
 		payerName: $page.url.searchParams.get('payerName') ?? '',
@@ -39,6 +42,20 @@
 		$page.url.searchParams.get('items') ?? '[["Esimerkki tuote tai palvelu",1,"kpl",9.99,24]]'
 	)
 	let lang = 'fi'
+
+	let mounted = false
+	onMount(() => (mounted = true))
+
+	$: barcode = v4(state, items)
+	$: {
+		if (mounted) {
+			JsBarcode('#barcode', barcode, {
+				format: 'CODE128',
+				displayValue: false,
+				marginRight: 40,
+			})
+		}
+	}
 </script>
 
 <header class="flex flex-row justify-center p-4 print:hidden">
@@ -65,6 +82,17 @@
 	>
 		Päivitä URL
 	</button>
+
+	{#if lang === 'fi'}
+		<button
+			class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+			on:click={() => {
+				navigator.clipboard.writeText(barcode)
+			}}
+		>
+			Kopioi virtuaaliviivakoodi
+		</button>
+	{/if}
 </header>
 
 <main class="flex flex-col items-center print:h-screen">

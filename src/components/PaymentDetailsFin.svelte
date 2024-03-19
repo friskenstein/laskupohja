@@ -7,6 +7,8 @@
 
 	export let state: State
 	export let items: Item[]
+
+	const IBAN_FMT = 'FI(\\d{16}|\\d{2} \\d{4} \\d{4} \\d{4} \\d{2})'
 </script>
 
 <section>
@@ -49,7 +51,13 @@
 			<td class="w-6/12 border-b-2 border-r-2 border-neutral-700 p-1 align-top">
 				IBAN
 				<br />
-				<input type="text" class="w-52 bg-yellow-200 print:bg-white" bind:value={state.iban} />
+				<input
+					type="text"
+					class="w-52 bg-yellow-200 invalid:bg-red-300 print:bg-white"
+					pattern={IBAN_FMT}
+					required
+					bind:value={state.iban}
+				/>
 			</td>
 			<td class="w-5/12 border-b-2 border-neutral-700 p-1 align-top" colspan="4">
 				SWIFT/BIC
@@ -120,7 +128,7 @@
 			<td class="border-b-2 border-neutral-700 p-1" colspan="3">
 				<input
 					type="text"
-					class="w-52 bg-yellow-200 print:hidden invalid:bg-red-300"
+					class="w-52 bg-yellow-200 invalid:bg-red-300 print:hidden"
 					bind:value={state.reference}
 					required
 					pattern="[1-9]\d{'{'}2,18{'}'}"

@@ -28,7 +28,7 @@
 					<td>
 						<input
 							type="text"
-							class="w-52 bg-yellow-200 print:hidden invalid:bg-red-300"
+							class="w-52 bg-yellow-200 invalid:bg-red-300 print:hidden"
 							bind:value={state.reference}
 							required
 							pattern="[1-9]\d{'{'}2,18{'}'}"
