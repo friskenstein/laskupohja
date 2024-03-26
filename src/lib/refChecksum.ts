@@ -10,5 +10,5 @@ export function refChecksum(reference: string): number {
 				return acc + parseInt(c) * mult
 			}, 0) %
 			10)
-	)
+	) % 10
 }
