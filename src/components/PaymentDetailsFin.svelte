@@ -72,8 +72,11 @@
 				Mottagare
 			</td>
 			<td class="border-b-2 border-r-2 border-neutral-700 p-1 align-top">
+				{state.companyName}
 				<br />
+				{state.companyAddress1}
 				<br />
+				{state.companyAddress2}
 			</td>
 			<td class="border-b-2 border-neutral-700 p-1" colspan="4" rowspan="2">
 				<br />
