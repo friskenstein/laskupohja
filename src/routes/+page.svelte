@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import HeaderFin from '../components/HeaderFin.svelte'
+	import Header from '../components/Header.svelte'
 	import ItemBreakdown from '../components/ItemBreakdown.svelte'
-	import PaymentDetailsFin from '../components/PaymentDetailsFin.svelte'
+	import PaymentDetails from '../components/PaymentDetails.svelte'
 	import { pushState } from '$app/navigation'
 	import type { State } from '../types/state'
 	import type { Item } from '../types/item'
@@ -36,6 +36,10 @@
 		companyPhone: $page.url.searchParams.get('companyPhone') ?? '',
 		companyEmail: $page.url.searchParams.get('companyEmail') ?? '',
 		companyWww: $page.url.searchParams.get('companyWww') ?? '',
+
+		bankName: $page.url.searchParams.get('bankName') ?? '',
+		bankAddress1: $page.url.searchParams.get('bankAddress1') ?? '',
+		bankAddress2: $page.url.searchParams.get('bankAddress2') ?? '',
 	}
 
 	let items: Item[] = JSON.parse(
@@ -43,9 +47,12 @@
 	)
 	let lang = 'fi'
 
+	let currency = 'EUR'
+
 	let mounted = false
 	onMount(() => (mounted = true))
 
+	// BUG:
 	$: barcode = v4(state, items)
 	$: {
 		if (mounted) {
@@ -65,6 +72,15 @@
 	>
 		<option value="fi" class="">Suomi</option>
 		<option value="en" class="">EU / 🌐</option>
+	</select>
+
+	<select
+		class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+		bind:value={currency}
+	>
+		<option value="EUR" class="">EUR</option>
+		<option value="USD" class="">USD</option>
+		<option value="SEK" class="">SEK</option>
 	</select>
 
 	<button
@@ -97,8 +113,8 @@
 
 <main class="flex flex-col items-center print:h-screen">
 	<article class="flex h-full w-full max-w-5xl flex-col justify-between print:max-w-none">
-		<HeaderFin bind:state />
-		<ItemBreakdown bind:state bind:items />
-		<PaymentDetailsFin bind:state {items} />
+		<Header bind:state {lang} />
+		<ItemBreakdown bind:state bind:items {lang} {currency} />
+		<PaymentDetails bind:state {items} {lang} />
 	</article>
 </main>

@@ -157,7 +157,7 @@
 			<td class="border-b-2 border-neutral-700 p-1">
 				{fmtMoney(
 					items.reduce((acc, item) => acc + item[1] * item[3] * (item[4] * 0.01 + 1), 0)
-				).replace('€', '')}
+				, 'EUR').replace('€', '')}
 			</td>
 		</tr>
 	</table>

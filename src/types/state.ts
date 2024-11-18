@@ -22,4 +22,8 @@ export type State = {
 	companyPhone: string
 	companyEmail: string
 	companyWww: string
+
+	bankName: string
+	bankAddress1: string
+	bankAddress2: string
 }
