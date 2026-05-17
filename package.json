@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"jsbarcode": "^3.11.6"
+		"jsbarcode": "^3.11.6",
+		"zod": "^4.4.3"
 	}
 }
