@@ -25,6 +25,10 @@
 	$: currentSelection = { ...selection, content }
 	$: validation = validateInvoiceDocumentSelection(currentSelection)
 	$: warnings = validation.printReadiness.warnings
+	$: finnishBankBarcodeIssues =
+		currentSelection.layoutVariantId === 'finnish-bank-transfer'
+			? (validation.paymentArtifactReadiness['finnish-bank-barcode']?.issues ?? [])
+			: []
 	$: selectedLayout = getLayoutVariantMetadata(currentSelection.layoutVariantId)
 	$: canCopyFinnishBankBarcode = canUsePaymentArtifactAction(
 		currentSelection,
@@ -128,6 +132,12 @@
 			>
 				Copy Finnish bank barcode
 			</button>
+
+			{#if finnishBankBarcodeIssues.length > 0}
+				<p class="max-w-sm text-sm text-amber-700">
+					{finnishBankBarcodeIssues[0].message}
+				</p>
+			{/if}
 
 			<p class="ml-auto text-sm text-neutral-600">
 				{selectedLayout.name} · {warnings.length} warning{warnings.length === 1 ? '' : 's'}
