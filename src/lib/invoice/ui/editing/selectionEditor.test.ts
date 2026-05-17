@@ -5,8 +5,11 @@ import {
 } from '../..'
 import {
 	canUsePaymentArtifactAction,
+	completeFinnishReferenceForEditing,
 	createEditableInvoiceDocumentSelectionFromUrl,
 	createShareableInvoiceUrl,
+	getFinnishReferenceBaseForEditing,
+	getFinnishReferenceChecksumForEditing,
 	selectLayoutVariant,
 } from './selectionEditor'
 
@@ -74,6 +77,16 @@ test('coordinates editable Invoice Document Selection over Shareable Invoice URL
 			'finnish-bank-barcode'
 		)
 	).toBe(true)
+})
+
+test('edits Finnish reference numbers through their base reference and checksum', () => {
+	expect(getFinnishReferenceBaseForEditing('12344')).toBe('1234')
+	expect(getFinnishReferenceChecksumForEditing('1234')).toBe('4')
+	expect(completeFinnishReferenceForEditing('1234')).toBe('12344')
+
+	expect(getFinnishReferenceBaseForEditing('12345')).toBe('12345')
+	expect(completeFinnishReferenceForEditing('12345')).toBe('123453')
+	expect(completeFinnishReferenceForEditing('abc')).toBe('abc')
 })
 
 const validSelection = (): EditableInvoiceDocumentSelection => ({

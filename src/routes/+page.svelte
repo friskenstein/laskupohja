@@ -11,9 +11,12 @@
 	} from '$lib/invoice'
 	import {
 		canUsePaymentArtifactAction,
+		completeFinnishReferenceForEditing,
 		createEditableInvoiceDocumentSelectionFromUrl,
 		createEmptyInvoiceLine,
 		createShareableInvoiceUrl,
+		getFinnishReferenceBaseForEditing,
+		getFinnishReferenceChecksumForEditing,
 		selectLayoutVariant,
 	} from '$lib/invoice/ui/editing/selectionEditor'
 	import { onMount } from 'svelte'
@@ -29,6 +32,10 @@
 		currentSelection.layoutVariantId === 'finnish-bank-transfer'
 			? (validation.paymentArtifactReadiness['finnish-bank-barcode']?.issues ?? [])
 			: []
+	$: finnishReferenceBase = getFinnishReferenceBaseForEditing(
+		content.paymentDetails.paymentReference
+	)
+	$: finnishReferenceChecksum = getFinnishReferenceChecksumForEditing(finnishReferenceBase)
 	$: selectedLayout = getLayoutVariantMetadata(currentSelection.layoutVariantId)
 	$: canCopyFinnishBankBarcode = canUsePaymentArtifactAction(
 		currentSelection,
@@ -73,6 +80,11 @@
 
 	const identifierValue = (identifiers: PartyIdentifier[], index: number) =>
 		identifiers[index]?.value ?? ''
+
+	const setFinnishReferenceBase = (baseReference: string) => {
+		content.paymentDetails.paymentReference = completeFinnishReferenceForEditing(baseReference)
+		content = content
+	}
 
 	const replaceBrowserUrl = (nextSelection: typeof currentSelection) => {
 		window.history.replaceState(
@@ -390,10 +402,27 @@
 					</label>
 					<label class="grid gap-1 text-sm">
 						<span>Payment reference</span>
-						<input
-							class="rounded border border-neutral-300 px-3 py-2"
-							bind:value={content.paymentDetails.paymentReference}
-						/>
+						{#if currentSelection.layoutVariantId === 'finnish-bank-transfer'}
+							<div class="flex items-stretch">
+								<input
+									class="min-w-0 flex-1 rounded-l border border-neutral-300 px-3 py-2"
+									inputmode="numeric"
+									pattern={'[1-9]\\d{2,18}'}
+									value={finnishReferenceBase}
+									on:input={event => setFinnishReferenceBase(event.currentTarget.value)}
+								/>
+								<span
+									class="inline-flex w-12 items-center justify-center rounded-r border border-l-0 border-neutral-300 bg-neutral-100 px-3 py-2 font-mono"
+								>
+									{finnishReferenceChecksum}
+								</span>
+							</div>
+						{:else}
+							<input
+								class="rounded border border-neutral-300 px-3 py-2"
+								bind:value={content.paymentDetails.paymentReference}
+							/>
+						{/if}
 					</label>
 					<label class="grid gap-1 text-sm">
 						<span>SWIFT/BIC</span>

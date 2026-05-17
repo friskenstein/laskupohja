@@ -2,6 +2,10 @@ import {
 	createDefaultEditableInvoiceDocumentSelection,
 	decodeShareableInvoiceUrl,
 	encodeShareableInvoiceUrl,
+	calculateFinnishReferenceNumberChecksum,
+	completeFinnishReferenceNumber,
+	isValidFinnishReferenceNumber,
+	normalizeFinnishReferenceNumber,
 	validateInvoiceDocumentSelection,
 	type EditableInvoiceDocumentSelection,
 	type EditableInvoiceLine,
@@ -48,3 +52,33 @@ export const createEmptyInvoiceLine = (): EditableInvoiceLine => ({
 	unitPrice: '',
 	vatRate: '24',
 })
+
+export const getFinnishReferenceBaseForEditing = (paymentReference: string): string => {
+	const normalized = normalizeFinnishReferenceNumber(paymentReference)
+
+	if (isValidFinnishReferenceNumber(normalized)) {
+		return normalized.slice(0, -1)
+	}
+
+	return normalized
+}
+
+export const completeFinnishReferenceForEditing = (baseReference: string): string => {
+	const normalized = normalizeFinnishReferenceNumber(baseReference)
+
+	if (normalized === '' || !/^\d+$/.test(normalized)) {
+		return normalized
+	}
+
+	return completeFinnishReferenceNumber(normalized)
+}
+
+export const getFinnishReferenceChecksumForEditing = (baseReference: string): string => {
+	const normalized = normalizeFinnishReferenceNumber(baseReference)
+
+	if (!/^\d+$/.test(normalized)) {
+		return ''
+	}
+
+	return String(calculateFinnishReferenceNumberChecksum(normalized))
+}
