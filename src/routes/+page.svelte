@@ -257,25 +257,25 @@
 							/>
 						</label>
 					</div>
-					<div class="grid grid-cols-3 gap-3">
-						<label class="grid gap-1 text-sm">
+					<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+						<label class="grid min-w-0 gap-1 text-sm">
 							<span>Phone</span>
 							<input
-								class="rounded border border-neutral-300 px-3 py-2"
+								class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 								bind:value={content.seller.contactDetails.phone}
 							/>
 						</label>
-						<label class="grid gap-1 text-sm">
+						<label class="grid min-w-0 gap-1 text-sm">
 							<span>Email</span>
 							<input
-								class="rounded border border-neutral-300 px-3 py-2"
+								class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 								bind:value={content.seller.contactDetails.email}
 							/>
 						</label>
-						<label class="grid gap-1 text-sm">
+						<label class="grid min-w-0 gap-1 text-sm">
 							<span>Website</span>
 							<input
-								class="rounded border border-neutral-300 px-3 py-2"
+								class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 								bind:value={content.seller.contactDetails.website}
 							/>
 						</label>
