@@ -11,11 +11,16 @@
 	import { v4 } from '$lib/bankBarcode'
 
 	let today = new Date()
+	let todayLocalDate = [
+		today.getFullYear(),
+		(today.getMonth() + 1).toString().padStart(2, '0'),
+		today.getDate().toString().padStart(2, '0'),
+	].join('-')
 
 	let state: State = {
 		invoiceNumber: $page.url.searchParams.get('invoiceNumber') ?? '',
 		reference: $page.url.searchParams.get('reference') ?? '100',
-		invoiceDate: today.toISOString().slice(0, 10) ?? '',
+		invoiceDate: todayLocalDate,
 		dueDays: $page.url.searchParams.get('dueDays') ?? '14', // NOTE: invoiceDate + dueDays = dueDate
 		note: $page.url.searchParams.get('note') ?? '',
 		iban: $page.url.searchParams.get('iban') ?? 'FI00 0000 0000 0000 00',

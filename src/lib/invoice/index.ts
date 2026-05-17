@@ -1,4 +1,10 @@
 export { createDefaultEditableInvoiceDocumentSelection } from './domain/defaults'
+export {
+	calculateDueDate,
+	formatFinnishBankBarcodeDate,
+	formatLocalDate,
+	tryCalculateDueDate,
+} from './calculation/dates'
 export type {
 	CurrencyCode,
 	EditableInvoiceContent,

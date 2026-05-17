@@ -1,6 +1,7 @@
 import type { Item } from '../types/item'
 import type { State } from '../types/state'
-import { calculateDueDateDate } from './dueDate'
+import { calculateDueDateLocalDate } from './dueDate'
+import { formatFinnishBankBarcodeDate } from './invoice/calculation/dates'
 import { refChecksum } from './refChecksum'
 
 /**
@@ -44,6 +45,8 @@ eräpäiväkentässä muodossa pp.kk.vvvv. Laskuttaja voi halutessaan täyttää
 pankkiviivakoodin eräpäiväkentän nollilla
 */
 export function v4(state: State, items: Item[]): string {
+	const dueDate = calculateDueDateLocalDate(state)
+
 	return [
 		'4',
 		state.iban.replace('FI', '').replaceAll(' ', '').padEnd(16, '0'),
@@ -52,10 +55,7 @@ export function v4(state: State, items: Item[]): string {
 			.padStart(8, '0'),
 		'000',
 		(state.reference + refChecksum(state.reference)).padStart(20, '0'),
-		(d =>
-			d.getFullYear().toString().slice(-2) +
-			(d.getMonth() + 1).toString().padStart(2, '0') +
-			d.getDate().toString().padStart(2, '0'))(calculateDueDateDate(state)),
+		dueDate ? formatFinnishBankBarcodeDate(dueDate) : '000000',
 	].join('')
 }
 

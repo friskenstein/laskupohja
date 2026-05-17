@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { State } from '../types/state'
-	import { calculateDueDate } from '$lib/dueDate'
+	import { calculateDueDate, formatInvoiceDate } from '$lib/dueDate'
 	import { refChecksum } from '$lib/refChecksum'
 
 	export let state: State
@@ -49,7 +49,7 @@
 								bind:value={state.invoiceDate}
 							/>
 							<span class="hidden print:inline">
-								{new Date(state.invoiceDate).toLocaleDateString('fi-FI')}
+								{formatInvoiceDate(state)}
 							</span>
 						</td>
 					</tr>
