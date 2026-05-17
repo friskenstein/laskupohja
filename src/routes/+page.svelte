@@ -347,32 +347,32 @@
 									bind:value={line.description}
 								/>
 							</label>
-							<div class="grid grid-cols-4 gap-3">
-								<label class="grid gap-1 text-sm">
+							<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+								<label class="grid min-w-0 gap-1 text-sm">
 									<span>Qty</span>
 									<input
-										class="rounded border border-neutral-300 px-3 py-2"
+										class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 										bind:value={line.quantity}
 									/>
 								</label>
-								<label class="grid gap-1 text-sm">
+								<label class="grid min-w-0 gap-1 text-sm">
 									<span>Unit</span>
 									<input
-										class="rounded border border-neutral-300 px-3 py-2"
+										class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 										bind:value={line.unit}
 									/>
 								</label>
-								<label class="grid gap-1 text-sm">
+								<label class="grid min-w-0 gap-1 text-sm">
 									<span>Price</span>
 									<input
-										class="rounded border border-neutral-300 px-3 py-2"
+										class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 										bind:value={line.unitPrice}
 									/>
 								</label>
-								<label class="grid gap-1 text-sm">
+								<label class="grid min-w-0 gap-1 text-sm">
 									<span>VAT %</span>
 									<input
-										class="rounded border border-neutral-300 px-3 py-2"
+										class="min-w-0 rounded border border-neutral-300 px-3 py-2"
 										bind:value={line.vatRate}
 									/>
 								</label>
