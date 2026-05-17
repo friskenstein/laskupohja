@@ -9,6 +9,21 @@
 	import { onMount } from 'svelte'
 	import JsBarcode from 'jsbarcode'
 	import { v4 } from '$lib/bankBarcode'
+	import InternationalInvoiceDocument from '$lib/invoice/layouts/international-invoice/Document.svelte'
+	import {
+		decodeShareableInvoiceUrl,
+		validateInvoiceDocumentSelection,
+		type EditableInvoiceDocumentSelection,
+	} from '$lib/invoice'
+
+	const decodedSelection = decodeShareableInvoiceUrl($page.url)
+	let internationalSelection: EditableInvoiceDocumentSelection | null =
+		decodedSelection.ok && decodedSelection.selection.layoutVariantId === 'international-invoice'
+			? decodedSelection.selection
+			: null
+	const internationalWarnings = internationalSelection
+		? validateInvoiceDocumentSelection(internationalSelection).printReadiness.warnings
+		: []
 
 	let today = new Date()
 	let todayLocalDate = [
@@ -70,56 +85,65 @@
 	}
 </script>
 
-<header class="flex flex-row justify-center p-4 print:hidden">
-	<select
-		class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
-		bind:value={lang}
-	>
-		<option value="fi" class="">Suomi</option>
-		<option value="en" class="">EU / 🌐</option>
-	</select>
+{#if internationalSelection}
+	<main class="flex flex-col items-center print:h-screen">
+		<InternationalInvoiceDocument
+			selection={internationalSelection}
+			warnings={internationalWarnings}
+		/>
+	</main>
+{:else}
+	<header class="flex flex-row justify-center p-4 print:hidden">
+		<select
+			class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+			bind:value={lang}
+		>
+			<option value="fi" class="">Suomi</option>
+			<option value="en" class="">EU / 🌐</option>
+		</select>
 
-	<select
-		class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
-		bind:value={currency}
-	>
-		<option value="EUR" class="">EUR</option>
-		<option value="USD" class="">USD</option>
-		<option value="SEK" class="">SEK</option>
-	</select>
+		<select
+			class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+			bind:value={currency}
+		>
+			<option value="EUR" class="">EUR</option>
+			<option value="USD" class="">USD</option>
+			<option value="SEK" class="">SEK</option>
+		</select>
 
-	<button
-		class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
-		on:click={() => {
-			// take all the fields of data and update the current URL
-			let url = new URL(window.location.href)
-			for (const [key, value] of Object.entries(state)) {
-				url.searchParams.set(key, value ?? '')
-			}
-			url.searchParams.set('items', JSON.stringify(items))
-			// set the URL without reloading the page
-			pushState(url.toString(), {})
-		}}
-	>
-		Päivitä URL
-	</button>
-
-	{#if lang === 'fi'}
 		<button
 			class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
 			on:click={() => {
-				navigator.clipboard.writeText(barcode)
+				// take all the fields of data and update the current URL
+				let url = new URL(window.location.href)
+				for (const [key, value] of Object.entries(state)) {
+					url.searchParams.set(key, value ?? '')
+				}
+				url.searchParams.set('items', JSON.stringify(items))
+				// set the URL without reloading the page
+				pushState(url.toString(), {})
 			}}
 		>
-			Kopioi virtuaaliviivakoodi
+			Päivitä URL
 		</button>
-	{/if}
-</header>
 
-<main class="flex flex-col items-center print:h-screen">
-	<article class="flex h-full w-full max-w-5xl flex-col justify-between print:max-w-none">
-		<Header bind:state {lang} />
-		<ItemBreakdown bind:state bind:items {lang} {currency} />
-		<PaymentDetails bind:state {items} {lang} />
-	</article>
-</main>
+		{#if lang === 'fi'}
+			<button
+				class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+				on:click={() => {
+					navigator.clipboard.writeText(barcode)
+				}}
+			>
+				Kopioi virtuaaliviivakoodi
+			</button>
+		{/if}
+	</header>
+
+	<main class="flex flex-col items-center print:h-screen">
+		<article class="flex h-full w-full max-w-5xl flex-col justify-between print:max-w-none">
+			<Header bind:state {lang} />
+			<ItemBreakdown bind:state bind:items {lang} {currency} />
+			<PaymentDetails bind:state {items} {lang} />
+		</article>
+	</main>
+{/if}
