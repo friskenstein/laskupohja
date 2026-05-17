@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { State } from "../types/state"
-	import HeaderFin from "./HeaderFin.svelte"
-	import HeaderInt from "./HeaderInt.svelte"
+	import type { State } from '../types/state'
+	import HeaderFin from './HeaderFin.svelte'
+	import HeaderInt from './HeaderInt.svelte'
 
 	export let lang: string = 'fi'
 

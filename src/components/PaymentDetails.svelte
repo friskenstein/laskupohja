@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Item } from "../types/item"
-	import type { State } from "../types/state"
-	import PaymentDetailsFin from "./PaymentDetailsFin.svelte"
-	import PaymentDetailsInt from "./PaymentDetailsInt.svelte"
+	import type { Item } from '../types/item'
+	import type { State } from '../types/state'
+	import PaymentDetailsFin from './PaymentDetailsFin.svelte'
+	import PaymentDetailsInt from './PaymentDetailsInt.svelte'
 
 	export let lang: string = 'fi'
 
