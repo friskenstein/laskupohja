@@ -1,7 +1,7 @@
 import { parseEditableMoney } from '../calculation/money'
 import { calculateInvoiceTotals } from '../calculation/totals'
 import { tryCalculateDueDate } from '../calculation/dates'
-import { refChecksum } from '../../refChecksum'
+import { validateFinnishBankBarcodeV4PaymentData } from '../payment/finnishBankBarcode'
 import type {
 	EditableInvoiceContent,
 	EditableInvoiceDocumentSelection,
@@ -204,19 +204,17 @@ const validateFinnishBankBarcodeRequirements = (
 ): ValidationIssue[] => {
 	const issues: ValidationIssue[] = []
 	const { content } = selection
-	const iban = normalizedIban(content.paymentDetails.iban)
+	const invoiceLines = parseInvoiceLines(content)
+	const dueDate = tryCalculateDueDate(
+		content.identity.invoiceDate,
+		content.identity.paymentTermDays
+	)
 
 	if (isBlank(content.paymentDetails.iban)) {
 		issues.push({
 			code: 'iban-required',
 			path: 'paymentDetails.iban',
 			message: 'Finnish Bank Barcode requires an IBAN.',
-		})
-	} else if (!/^FI\d{16}$/.test(iban)) {
-		issues.push({
-			code: 'finnish-iban-invalid',
-			path: 'paymentDetails.iban',
-			message: 'Finnish Bank Barcode requires a Finnish IBAN.',
 		})
 	}
 
@@ -226,15 +224,9 @@ const validateFinnishBankBarcodeRequirements = (
 			path: 'paymentDetails.paymentReference',
 			message: 'Finnish Bank Barcode requires a Finnish reference number.',
 		})
-	} else if (!isValidFinnishReferenceNumber(content.paymentDetails.paymentReference)) {
-		issues.push({
-			code: 'finnish-reference-invalid',
-			path: 'paymentDetails.paymentReference',
-			message: 'Finnish Bank Barcode requires a valid Finnish reference number.',
-		})
 	}
 
-	if (!tryCalculateDueDate(content.identity.invoiceDate, content.identity.paymentTermDays)) {
+	if (!dueDate) {
 		issues.push({
 			code: 'barcode-due-date-invalid',
 			path: 'identity',
@@ -242,23 +234,27 @@ const validateFinnishBankBarcodeRequirements = (
 		})
 	}
 
-	const invoiceLines = parseInvoiceLines(content)
-
 	if (!invoiceLines) {
 		issues.push({
 			code: 'barcode-amount-invalid',
 			path: 'lines',
 			message: 'Finnish Bank Barcode requires valid invoice line amounts.',
 		})
-	} else if (calculateInvoiceTotals(invoiceLines).grossTotalMinorUnits <= 0) {
-		issues.push({
-			code: 'barcode-amount-positive-required',
-			path: 'lines',
-			message: 'Finnish Bank Barcode requires a positive payable amount.',
-		})
 	}
 
-	return issues
+	if (issues.length > 0 || !invoiceLines || !dueDate) {
+		return issues
+	}
+
+	return [
+		...issues,
+		...validateFinnishBankBarcodeV4PaymentData({
+			iban: content.paymentDetails.iban,
+			amountMinorUnits: calculateInvoiceTotals(invoiceLines).grossTotalMinorUnits,
+			dueDate,
+			finnishReferenceNumber: content.paymentDetails.paymentReference,
+		}).map(toBarcodeValidationIssue),
+	]
 }
 
 const addRequiredIssue = (issues: ValidationIssue[], value: string, issue: ValidationIssue) => {
@@ -304,21 +300,40 @@ const readinessFromIssues = (issues: ValidationIssue[]): Readiness => ({
 	issues,
 })
 
-const normalizedIban = (iban: string): string => iban.replaceAll(/\s/g, '').toUpperCase()
-
-const normalizedReference = (reference: string): string => reference.replaceAll(/\s/g, '')
-
-const isValidFinnishReferenceNumber = (reference: string): boolean => {
-	const normalized = normalizedReference(reference)
-
-	if (!/^\d{4,20}$/.test(normalized)) {
-		return false
+const toBarcodeValidationIssue = (issue: {
+	code: string
+	path: string
+	message: string
+}): ValidationIssue => {
+	if (issue.path === 'iban') {
+		return {
+			code: 'finnish-iban-invalid',
+			path: 'paymentDetails.iban',
+			message: 'Finnish Bank Barcode requires a Finnish IBAN.',
+		}
 	}
 
-	const baseReference = normalized.slice(0, -1)
-	const checksum = Number(normalized.at(-1))
+	if (issue.path === 'finnishReferenceNumber') {
+		return {
+			code: 'finnish-reference-invalid',
+			path: 'paymentDetails.paymentReference',
+			message: 'Finnish Bank Barcode requires a valid Finnish reference number.',
+		}
+	}
 
-	return refChecksum(baseReference) === checksum
+	if (issue.path === 'amountMinorUnits') {
+		return {
+			code: 'barcode-amount-positive-required',
+			path: 'lines',
+			message: 'Finnish Bank Barcode requires a positive payable amount.',
+		}
+	}
+
+	return {
+		code: 'barcode-due-date-invalid',
+		path: 'identity',
+		message: 'Finnish Bank Barcode requires a valid due date.',
+	}
 }
 
 const parseInvoiceLines = (content: EditableInvoiceContent): InvoiceLine[] | null => {

@@ -244,7 +244,7 @@ const createValidEditableInvoiceDocumentSelection = (): EditableInvoiceDocumentS
 		],
 		paymentDetails: {
 			...createDefaultEditableInvoiceDocumentSelection().content.paymentDetails,
-			iban: 'FI12 3456 7890 1234 56',
+			iban: 'FI21 1234 5600 0007 85',
 			swiftBic: 'NDEAFIHH',
 			bankName: 'Nordea',
 			paymentReference: '12344',
