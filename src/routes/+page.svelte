@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte'
 	import JsBarcode from 'jsbarcode'
 	import { v4 } from '$lib/bankBarcode'
+	import FinnishBankTransferDocument from '$lib/invoice/layouts/finnish-bank-transfer/Document.svelte'
 	import InternationalInvoiceDocument from '$lib/invoice/layouts/international-invoice/Document.svelte'
 	import {
 		decodeShareableInvoiceUrl,
@@ -17,13 +18,26 @@
 	} from '$lib/invoice'
 
 	const decodedSelection = decodeShareableInvoiceUrl($page.url)
-	let internationalSelection: EditableInvoiceDocumentSelection | null =
-		decodedSelection.ok && decodedSelection.selection.layoutVariantId === 'international-invoice'
-			? decodedSelection.selection
-			: null
-	const internationalWarnings = internationalSelection
-		? validateInvoiceDocumentSelection(internationalSelection).printReadiness.warnings
-		: []
+	const invoiceDocumentSelection: EditableInvoiceDocumentSelection | null = decodedSelection.ok
+		? decodedSelection.selection
+		: null
+	const invoiceDocumentValidation = invoiceDocumentSelection
+		? validateInvoiceDocumentSelection(invoiceDocumentSelection)
+		: null
+	const invoiceDocumentWarnings = invoiceDocumentValidation?.printReadiness.warnings ?? []
+	const canCopyFinnishBankBarcode =
+		invoiceDocumentSelection?.layoutVariantId === 'finnish-bank-transfer' &&
+		invoiceDocumentValidation?.paymentArtifactReadiness['finnish-bank-barcode']?.ready === true
+
+	const copyRenderedFinnishBankBarcode = () => {
+		const payload = document
+			.querySelector('[data-finnish-bank-barcode-payload]')
+			?.getAttribute('data-finnish-bank-barcode-payload')
+
+		if (payload) {
+			navigator.clipboard.writeText(payload)
+		}
+	}
 
 	let today = new Date()
 	let todayLocalDate = [
@@ -75,7 +89,7 @@
 	// BUG:
 	$: barcode = v4(state, items)
 	$: {
-		if (mounted) {
+		if (mounted && !invoiceDocumentSelection) {
 			JsBarcode('#barcode', barcode, {
 				format: 'CODE128',
 				displayValue: false,
@@ -85,12 +99,29 @@
 	}
 </script>
 
-{#if internationalSelection}
+{#if invoiceDocumentSelection}
+	{#if canCopyFinnishBankBarcode}
+		<header class="flex flex-row justify-center p-4 print:hidden">
+			<button
+				class="relative m-2 rounded bg-blue-400 p-1 text-white shadow hover:left-0.5 hover:top-0.5"
+				on:click={copyRenderedFinnishBankBarcode}
+			>
+				Kopioi virtuaaliviivakoodi
+			</button>
+		</header>
+	{/if}
 	<main class="flex flex-col items-center print:h-screen">
-		<InternationalInvoiceDocument
-			selection={internationalSelection}
-			warnings={internationalWarnings}
-		/>
+		{#if invoiceDocumentSelection.layoutVariantId === 'finnish-bank-transfer'}
+			<FinnishBankTransferDocument
+				selection={invoiceDocumentSelection}
+				warnings={invoiceDocumentWarnings}
+			/>
+		{:else}
+			<InternationalInvoiceDocument
+				selection={invoiceDocumentSelection}
+				warnings={invoiceDocumentWarnings}
+			/>
+		{/if}
 	</main>
 {:else}
 	<header class="flex flex-row justify-center p-4 print:hidden">
