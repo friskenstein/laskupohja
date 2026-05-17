@@ -1,4 +1,5 @@
 export { createDefaultEditableInvoiceDocumentSelection } from './domain/defaults'
+export { supportedCurrencies, supportedCurrencyCodes } from './domain/currencies'
 export {
 	calculateDueDate,
 	formatFinnishBankBarcodeDate,
@@ -43,7 +44,6 @@ export type {
 	ValidationIssue,
 } from './validation/validation'
 export type {
-	CurrencyCode,
 	EditableInvoiceContent,
 	EditableInvoiceDocumentSelection,
 	EditableInvoiceIdentity,
@@ -61,6 +61,7 @@ export type {
 	PostalAddress,
 	ContactDetails,
 } from './domain/types'
+export type { CurrencyCode } from './domain/currencies'
 export {
 	getLayoutVariantMetadata,
 	layoutVariantMetadata,

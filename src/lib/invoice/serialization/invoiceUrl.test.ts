@@ -85,6 +85,21 @@ test('rejects structurally invalid invoice document selections', () => {
 	})
 })
 
+test('rejects unsupported invoice currencies', () => {
+	const url = shareableInvoiceUrlWithPayload({
+		version: 1,
+		selection: {
+			...createDefaultEditableInvoiceDocumentSelection(),
+			currency: 'INVALID',
+		},
+	})
+
+	expect(decodeShareableInvoiceUrl(url)).toEqual({
+		ok: false,
+		reason: 'invalid-selection',
+	})
+})
+
 test('does not support old flat invoice query parameters', () => {
 	const oldFlatUrl =
 		'https://example.test/invoice?invoiceNumber=123&layoutVariantId=finnish-bank-transfer&currency=EUR'

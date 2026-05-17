@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores'
+	import { afterNavigate, replaceState } from '$app/navigation'
 	import FinnishBankTransferDocument from '$lib/invoice/layouts/finnish-bank-transfer/Document.svelte'
 	import InternationalInvoiceDocument from '$lib/invoice/layouts/international-invoice/Document.svelte'
 	import {
 		getLayoutVariantMetadata,
 		layoutVariantMetadata,
+		supportedCurrencies,
 		validateInvoiceDocumentSelection,
 		type LayoutVariantId,
 		type PartyIdentifier,
@@ -19,8 +21,6 @@
 		getFinnishReferenceChecksumForEditing,
 		selectLayoutVariant,
 	} from '$lib/invoice/ui/editing/selectionEditor'
-	import { onMount } from 'svelte'
-
 	let selection = createEditableInvoiceDocumentSelectionFromUrl($page.url)
 	let content = selection.content
 	let mounted = false
@@ -30,7 +30,7 @@
 	$: warnings = validation.printReadiness.warnings
 	$: finnishBankBarcodeIssues =
 		currentSelection.layoutVariantId === 'finnish-bank-transfer'
-			? (validation.paymentArtifactReadiness['finnish-bank-barcode']?.issues ?? [])
+			? validation.paymentArtifactReadiness['finnish-bank-barcode']?.issues ?? []
 			: []
 	$: finnishReferenceBase = getFinnishReferenceBaseForEditing(
 		content.paymentDetails.paymentReference
@@ -45,9 +45,8 @@
 		replaceBrowserUrl(currentSelection)
 	}
 
-	onMount(() => {
+	afterNavigate(() => {
 		mounted = true
-		replaceBrowserUrl(currentSelection)
 	})
 
 	const chooseLayoutVariant = (layoutVariantId: string) => {
@@ -87,11 +86,7 @@
 	}
 
 	const replaceBrowserUrl = (nextSelection: typeof currentSelection) => {
-		window.history.replaceState(
-			{},
-			'',
-			createShareableInvoiceUrl(window.location.href, nextSelection)
-		)
+		replaceState(createShareableInvoiceUrl(window.location.href, nextSelection), {})
 	}
 
 	const copyRenderedFinnishBankBarcode = () => {
@@ -131,10 +126,14 @@
 
 			<label class="flex items-center gap-2 text-sm font-medium">
 				<span>Currency</span>
-				<input
-					class="w-24 rounded border border-neutral-300 px-3 py-2 uppercase"
+				<select
+					class="rounded border border-neutral-300 bg-white px-3 py-2"
 					bind:value={selection.currency}
-				/>
+				>
+					{#each supportedCurrencies as currency (currency.code)}
+						<option value={currency.code}>{currency.label}</option>
+					{/each}
+				</select>
 			</label>
 
 			<button

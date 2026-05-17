@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { supportedCurrencyCodes } from '../domain/currencies'
 
 export const postalAddressSchema = z
 	.object({
@@ -72,12 +73,13 @@ export const editableInvoiceContentSchema = z
 	.strict()
 
 export const layoutVariantIdSchema = z.enum(['finnish-bank-transfer', 'international-invoice'])
+export const currencyCodeSchema = z.enum(supportedCurrencyCodes)
 
 export const editableInvoiceDocumentSelectionSchema = z
 	.object({
 		content: editableInvoiceContentSchema,
 		layoutVariantId: layoutVariantIdSchema,
-		currency: z.string(),
+		currency: currencyCodeSchema,
 	})
 	.strict()
 

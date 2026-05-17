@@ -1,6 +1,8 @@
+import type { CurrencyCode } from './currencies'
+
 export type LocalDate = string
 
-export type CurrencyCode = string
+export type { CurrencyCode } from './currencies'
 
 export type LayoutVariantId = 'finnish-bank-transfer' | 'international-invoice'
 
