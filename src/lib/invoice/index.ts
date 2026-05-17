@@ -5,6 +5,10 @@ export {
 	formatLocalDate,
 	tryCalculateDueDate,
 } from './calculation/dates'
+export { parseEditableMoney } from './calculation/money'
+export { calculateInvoiceLineAmounts, calculateInvoiceTotals } from './calculation/totals'
+export type { ParsedMinorUnitAmount } from './calculation/money'
+export type { InvoiceLineAmounts, InvoiceTotals, VatBreakdownLine } from './calculation/totals'
 export type {
 	CurrencyCode,
 	EditableInvoiceContent,
