@@ -144,6 +144,8 @@ export const renderMarkdown = (markdown: string): string => {
 			blocks.push(renderList(currentBlock, 'ul'))
 		} else if (currentBlock.every(line => /^\s*\d+\.\s+/.test(line))) {
 			blocks.push(renderList(currentBlock, 'ol'))
+		} else if (currentBlock.length === 1 && /^\s*-{3,}\s*$/.test(firstLine)) {
+			blocks.push('<hr />')
 		} else {
 			blocks.push(renderParagraph(currentBlock))
 		}

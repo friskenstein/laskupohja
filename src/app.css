@@ -10,6 +10,18 @@
 	@apply my-2;
 }
 
+.invoice-note :where(h1) {
+	@apply text-2xl font-bold;
+}
+
+.invoice-note :where(h2) {
+	@apply text-xl font-bold;
+}
+
+.invoice-note :where(h3, h4, h5, h6) {
+	@apply text-lg font-bold;
+}
+
 .invoice-note :where(ul, ol) {
 	@apply pl-6;
 }
@@ -36,6 +48,10 @@
 
 .invoice-note :where(a) {
 	@apply underline;
+}
+
+.invoice-note :where(hr) {
+	@apply my-4 border-0 border-t border-neutral-300;
 }
 
 @media print {
