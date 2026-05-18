@@ -129,15 +129,23 @@
 			{@html renderMarkdown(content.note)}
 		</div>
 
-		<table class="w-full">
+		<table class="w-full table-fixed">
+			<colgroup>
+				<col style="width: 40%;" />
+				<col style="width: 8.571%;" />
+				<col style="width: 8.571%;" />
+				<col style="width: 17.143%;" />
+				<col style="width: 8.571%;" />
+				<col style="width: 17.143%;" />
+			</colgroup>
 			<tbody>
 				<tr class="bg-neutral-200 font-bold">
-					<th class="w-2/12 p-2 text-left">Kuvaus</th>
-					<th class="w-2/12 text-right">Määrä</th>
-					<th class="w-2/12 text-right">Yksikkö</th>
-					<th class="w-2/12 text-right">À-hinta</th>
-					<th class="w-2/12 text-right">Alv %</th>
-					<th class="w-2/12 p-2 text-right">Yhteensä</th>
+					<th class="p-2 text-left">Kuvaus</th>
+					<th class="text-right">Määrä</th>
+					<th class="text-right">Yksikkö</th>
+					<th class="text-right">À-hinta</th>
+					<th class="text-right">Alv %</th>
+					<th class="p-2 text-right">Yhteensä</th>
 				</tr>
 
 				{#each content.lines as line, index (line)}

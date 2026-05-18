@@ -165,15 +165,23 @@
 			{@html renderMarkdown(content.note)}
 		</div>
 
-		<table class="w-full">
+		<table class="w-full table-fixed">
+			<colgroup>
+				<col style="width: 40%;" />
+				<col style="width: 8.571%;" />
+				<col style="width: 8.571%;" />
+				<col style="width: 17.143%;" />
+				<col style="width: 8.571%;" />
+				<col style="width: 17.143%;" />
+			</colgroup>
 			<tbody>
 				<tr class="bg-neutral-200 font-bold">
-					<th class="w-2/12 p-2 text-left">Description</th>
-					<th class="w-2/12 text-right">Qty</th>
-					<th class="w-2/12 text-right">Unit</th>
-					<th class="w-2/12 text-right">Unit price</th>
-					<th class="w-2/12 text-right">VAT %</th>
-					<th class="w-2/12 p-2 text-right">Total</th>
+					<th class="p-2 text-left">Description</th>
+					<th class="text-right">Qty</th>
+					<th class="text-right">Unit</th>
+					<th class="text-right">Unit price</th>
+					<th class="text-right">VAT %</th>
+					<th class="p-2 text-right">Total</th>
 				</tr>
 
 				{#each content.lines as line, index (line)}

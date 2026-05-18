@@ -17,15 +17,23 @@
 	></textarea>
 	<p class="hidden px-2 py-8 print:block">{@html state.note}</p>
 
-	<table class="w-full">
+	<table class="w-full table-fixed">
+		<colgroup>
+			<col style="width: 40%;" />
+			<col style="width: 8.571%;" />
+			<col style="width: 8.571%;" />
+			<col style="width: 17.143%;" />
+			<col style="width: 8.571%;" />
+			<col style="width: 17.143%;" />
+		</colgroup>
 		<tbody>
 			<tr class="bg-neutral-200 font-bold">
-				<th class="w-2/12 p-2 text-left">{lang === 'fi' ? 'Kuvaus' : 'Description'}</th>
-				<th class="w-2/12 text-right">{lang === 'fi' ? 'Määrä' : 'Qty'}</th>
-				<th class="w-2/12 text-right">{lang === 'fi' ? 'Yksikkö' : 'Unit'}</th>
-				<th class="w-2/12 text-right">{lang === 'fi' ? 'À-hinta' : 'Unit price'}</th>
-				<th class="w-2/12 text-right">{lang === 'fi' ? 'Alv %' : 'VAT %'}</th>
-				<th class="w-2/12 p-2 text-right">{lang === 'fi' ? 'Yhteensä' : 'Total'}</th>
+				<th class="p-2 text-left">{lang === 'fi' ? 'Kuvaus' : 'Description'}</th>
+				<th class="text-right">{lang === 'fi' ? 'Määrä' : 'Qty'}</th>
+				<th class="text-right">{lang === 'fi' ? 'Yksikkö' : 'Unit'}</th>
+				<th class="text-right">{lang === 'fi' ? 'À-hinta' : 'Unit price'}</th>
+				<th class="text-right">{lang === 'fi' ? 'Alv %' : 'VAT %'}</th>
+				<th class="p-2 text-right">{lang === 'fi' ? 'Yhteensä' : 'Total'}</th>
 			</tr>
 
 			{#each items as item (item)}
