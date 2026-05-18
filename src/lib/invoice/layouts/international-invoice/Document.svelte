@@ -38,6 +38,21 @@
 		]
 	}
 
+	const internationalIdentifiers = (
+		identifiers: EditableInvoiceDocumentSelection['content']['seller']['identifiers']
+	) =>
+		identifiers.flatMap(identifier => {
+			if (identifier.label === 'Y-tunnus') {
+				return []
+			}
+
+			if (identifier.label === 'ALV nro') {
+				return [{ ...identifier, label: 'VAT no.' }]
+			}
+
+			return [identifier]
+		})
+
 	const formatMoney = (minorUnits: number) => {
 		return new Intl.NumberFormat('en-US', {
 			style: 'currency',
@@ -98,7 +113,7 @@
 							<td class="font-bold">Due date</td>
 							<td class="font-bold">{dueDate ? formatDate(dueDate) : ''}</td>
 						</tr>
-						{#each content.seller.identifiers as identifier (`${identifier.label}:${identifier.value}`)}
+						{#each internationalIdentifiers(content.seller.identifiers) as identifier (`${identifier.label}:${identifier.value}`)}
 							<tr>
 								<td></td>
 								<td>{identifier.label} {identifier.value}</td>
@@ -131,7 +146,7 @@
 							<td></td>
 							<td></td>
 						</tr>
-						{#each content.buyer.identifiers as identifier (`${identifier.label}:${identifier.value}`)}
+						{#each internationalIdentifiers(content.buyer.identifiers) as identifier (`${identifier.label}:${identifier.value}`)}
 							<tr>
 								<td></td>
 								<td>{identifier.label} {identifier.value}</td>
@@ -224,7 +239,7 @@
 		<table class="w-full border-t-2 border-neutral-700 text-sm">
 			<tbody>
 				<tr>
-					<td>{content.seller.name}</td>
+					<td class="font-bold">{content.seller.name}</td>
 					<td class="font-bold">Contact Information</td>
 					<td class="font-bold" colspan="2">Payment Details</td>
 				</tr>
@@ -248,7 +263,7 @@
 				</tr>
 				<tr>
 					<td>
-						{#each content.seller.identifiers as identifier (`${identifier.label}:${identifier.value}`)}
+						{#each internationalIdentifiers(content.seller.identifiers) as identifier (`${identifier.label}:${identifier.value}`)}
 							{identifier.label} {identifier.value}
 						{/each}
 					</td>

@@ -28,7 +28,10 @@ test('renders international Invoice Document from Invoice Document Selection', a
 					addressLine2: '00100 Helsinki',
 					country: 'Finland',
 				},
-				identifiers: [{ label: 'VAT no.', value: 'FI12345678' }],
+				identifiers: [
+					{ label: 'Y-tunnus', value: '1234567-8' },
+					{ label: 'ALV nro', value: 'FI12345678' },
+				],
 				contactDetails: {
 					phone: '+358 40 123 4567',
 					email: 'billing@example.test',
@@ -42,7 +45,7 @@ test('renders international Invoice Document from Invoice Document Selection', a
 					addressLine2: 'EC1A London',
 					country: 'United Kingdom',
 				},
-				identifiers: [{ label: 'VAT no.', value: 'GB123456789' }],
+				identifiers: [{ label: 'ALV nro', value: 'GB123456789' }],
 				contactDetails: {
 					phone: '',
 					email: '',
@@ -97,6 +100,10 @@ test('renders international Invoice Document from Invoice Document Selection', a
 	expect(body).toContain('5/17/2026')
 	expect(body).toContain('5/31/2026')
 	expect(body).toContain('Global Buyer Ltd')
+	expect(body).toContain('VAT no. FI12345678')
+	expect(body).toContain('VAT no. GB123456789')
+	expect(body).not.toContain('Y-tunnus')
+	expect(body).not.toContain('ALV nro')
 	expect(body).toContain('Consulting')
 	expect(body).toContain('Total excl. VAT')
 	expect(body).toContain('€250.00')
@@ -107,6 +114,7 @@ test('renders international Invoice Document from Invoice Document Selection', a
 	expect(body).toContain('Total amount due')
 	expect(body).toContain('€298.00')
 	expect(body).toContain('Payment Details')
+	expect(body).toContain('<td class="font-bold">Nordic Seller Oy</td>')
 	expect(body).toContain('IBAN')
 	expect(body).toContain('FI21 1234 5600 0007 85')
 	expect(body).toContain('Swift/BIC')
