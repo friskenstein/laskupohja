@@ -85,7 +85,7 @@
 		content = content
 	}
 
-	const replaceBrowserUrl = (nextSelection: typeof currentSelection) => {
+	function replaceBrowserUrl(nextSelection: typeof currentSelection) {
 		replaceState(createShareableInvoiceUrl(window.location.href, nextSelection), {})
 	}
 

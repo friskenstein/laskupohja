@@ -3,6 +3,7 @@
 		calculateInvoiceTotals,
 		formatLocalDate,
 		parseEditableMoney,
+		renderMarkdown,
 		tryCalculateDueDate,
 		type EditableInvoiceDocumentSelection,
 		type InvoiceLine,
@@ -145,7 +146,9 @@
 	</section>
 
 	<section>
-		<p class="px-2 py-8">{content.note}</p>
+		<div class="invoice-note px-2 py-8">
+			{@html renderMarkdown(content.note)}
+		</div>
 
 		<table class="w-full">
 			<tbody>

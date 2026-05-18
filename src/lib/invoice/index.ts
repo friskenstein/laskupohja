@@ -8,6 +8,7 @@ export {
 } from './calculation/dates'
 export { parseEditableMoney } from './calculation/money'
 export { calculateInvoiceLineAmounts, calculateInvoiceTotals } from './calculation/totals'
+export { renderMarkdown } from './formatting/markdown'
 export {
 	createFinnishBankBarcodeV4Payload,
 	FinnishBankBarcodePayloadError,

@@ -76,7 +76,7 @@ test('renders international Invoice Document from Invoice Document Selection', a
 				},
 				paymentReference: 'RF18539007547034',
 			},
-			note: 'Payment by bank transfer.',
+			note: 'Payment by **bank transfer**.\n\n- Use invoice number',
 		},
 	}
 	const warnings: ValidationIssue[] = [
@@ -112,6 +112,8 @@ test('renders international Invoice Document from Invoice Document Selection', a
 	expect(body).toContain('Swift/BIC')
 	expect(body).toContain('NDEAFIHH')
 	expect(body).toContain('Buyer email is missing.')
+	expect(body).toContain('<strong>bank transfer</strong>')
+	expect(body).toContain('<ul><li>Use invoice number</li></ul>')
 	expect(body).not.toContain('Kopioi virtuaaliviivakoodi')
 	expect(body).not.toContain('barcode')
 }, 20000)

@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+.invoice-note {
+	@apply leading-6;
+}
+
+.invoice-note :where(p, ul, ol, h1, h2, h3, h4, h5, h6) {
+	@apply my-2;
+}
+
+.invoice-note :where(ul, ol) {
+	@apply pl-6;
+}
+
+.invoice-note ul {
+	@apply list-disc;
+}
+
+.invoice-note ol {
+	@apply list-decimal;
+}
+
+.invoice-note :where(strong) {
+	@apply font-bold;
+}
+
+.invoice-note :where(em) {
+	@apply italic;
+}
+
+.invoice-note :where(code) {
+	@apply rounded bg-neutral-100 px-1 py-0.5 font-mono text-sm;
+}
+
+.invoice-note :where(a) {
+	@apply underline;
+}
+
 @media print {
 	:root {
 		font-size: 0.75rem;

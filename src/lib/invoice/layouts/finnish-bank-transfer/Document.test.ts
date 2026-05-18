@@ -79,7 +79,7 @@ test('renders Finnish bank transfer Invoice Document from Invoice Document Selec
 				},
 				paymentReference: '12344',
 			},
-			note: 'Maksu tilisiirtona.',
+			note: 'Maksu **tilisiirtona**.\n\n- Kayta viitetta',
 		},
 	}
 	const warnings: ValidationIssue[] = [
@@ -117,7 +117,71 @@ test('renders Finnish bank transfer Invoice Document from Invoice Document Selec
 	expect(body).toContain('data-finnish-bank-barcode-payload')
 	expect(body).toContain('421123456000007850002980000000000000000000012344260531')
 	expect(body).toContain('Buyer email is missing.')
+	expect(body).toContain('<strong>tilisiirtona</strong>')
+	expect(body).toContain('<ul><li>Kayta viitetta</li></ul>')
 	expect(body).not.toContain('Kopioi virtuaaliviivakoodi')
+}, 20000)
+
+test('escapes unsafe markdown in Finnish bank transfer note', async () => {
+	const selection: EditableInvoiceDocumentSelection = {
+		layoutVariantId: 'finnish-bank-transfer',
+		currency: 'EUR',
+		content: {
+			identity: {
+				invoiceNumber: 'INV-2026-003',
+				invoiceDate: '2026-05-17',
+				paymentTermDays: '14',
+			},
+			seller: {
+				name: 'Nordic Seller Oy',
+				postalAddress: {
+					addressLine1: '',
+					addressLine2: '',
+					country: '',
+				},
+				identifiers: [],
+				contactDetails: {
+					phone: '',
+					email: '',
+					website: '',
+				},
+			},
+			buyer: {
+				name: '',
+				postalAddress: {
+					addressLine1: '',
+					addressLine2: '',
+					country: '',
+				},
+				identifiers: [],
+				contactDetails: {
+					phone: '',
+					email: '',
+					website: '',
+				},
+			},
+			lines: [],
+			paymentDetails: {
+				iban: '',
+				swiftBic: '',
+				bankName: '',
+				bankAddress: {
+					addressLine1: '',
+					addressLine2: '',
+					country: '',
+				},
+				paymentReference: '',
+			},
+			note: '<script>alert("x")</script> [bad](javascript:alert(1))',
+		},
+	}
+	const FinnishBankTransferDocument = await compileServerComponent()
+
+	const { body } = render(FinnishBankTransferDocument, { props: { selection, warnings: [] } })
+
+	expect(body).toContain('&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; bad')
+	expect(body).not.toContain('<script>')
+	expect(body).not.toContain('javascript:alert')
 }, 20000)
 
 test('renders Finnish bank transfer document without barcode payload when payment data is invalid', async () => {
