@@ -94,6 +94,7 @@ test('renders Finnish bank transfer Invoice Document from Invoice Document Selec
 	const { body } = render(FinnishBankTransferDocument, { props: { selection, warnings } })
 
 	expect(body).toContain('Lasku')
+	expect(body).toContain('print:min-h-screen')
 	expect(body).toContain('Laskun numero')
 	expect(body).toContain('INV-2026-001')
 	expect(body).toContain('17.5.2026')

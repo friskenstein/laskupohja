@@ -54,7 +54,7 @@
 </script>
 
 <article
-	class="flex h-full w-full max-w-5xl flex-col justify-between bg-white text-neutral-950 print:max-w-none"
+	class="flex h-full w-full max-w-5xl flex-col justify-between bg-white text-neutral-950 print:min-h-screen print:max-w-none"
 >
 	{#if warnings.length > 0}
 		<aside class="mb-6 border-l-4 border-amber-400 bg-amber-50 p-4 text-sm print:hidden">

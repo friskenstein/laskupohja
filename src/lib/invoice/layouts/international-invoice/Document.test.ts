@@ -91,6 +91,7 @@ test('renders international Invoice Document from Invoice Document Selection', a
 	const { body } = render(InternationalInvoiceDocument, { props: { selection, warnings } })
 
 	expect(body).toContain('Invoice')
+	expect(body).toContain('print:min-h-screen')
 	expect(body).toContain('Invoice no.')
 	expect(body).toContain('INV-2026-001')
 	expect(body).toContain('5/17/2026')
